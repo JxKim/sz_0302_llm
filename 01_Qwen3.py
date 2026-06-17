@@ -224,14 +224,19 @@ class GroupedQueryAttention(nn.Module):
         values = values.repeat_interleave(self.group_size, dim=1)
 
         # 注意力得分计算
+        # keys: [batch_size, num_heads, num_tokens , head_dim ]
+        # keys。transpose: [batch_size, num_heads, head_dim , num_tokens ]
         attn_scores = queries @ keys.transpose(2, 3)
         # 需要对score做因果掩码，使得每个token只能关注自己和前面的token
         attn_scores = attn_scores.masked_fill(mask, -torch.inf)
         attn_weights = torch.softmax(attn_scores / self.head_dim**0.5, dim=-1)
-        # attn_weights: [batch_size, num_heads, query_len, key_value_len]
-        # values: [batch_size, num_heads, key_value_len, head_dim]
+        # attn_weights: [batch_size, num_heads, query_len, query_len]
+        # values: [batch_size, num_heads, query_len, head_dim]
+        # (attn_weights @ values)结果：[batch_size, num_heads, query_len, head_dim]
         # context转置后shape: [batch_size, query_len, num_heads, head_dim]
+        # reshape: 去掉num_heads: d_out: num_heads* head_dim
         context = (attn_weights @ values).transpose(1, 2).reshape(b, num_tokens, self.d_out)
+        # o_proj降维：转换成(b, num_tokens, d_in(hidden_size))
         return self.o_proj(context), next_cache
 
 def compute_rope_params(head_dim, theta_base=10_000, context_length=4096, dtype=torch.float32):

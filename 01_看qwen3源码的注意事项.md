@@ -17,10 +17,9 @@
    1. 理解q_proj, k_proj 和 v_proj以及后面的o_proj的定义，出入参
    2. 理解k_proj和v_proj算得的向量，转换过程
      
+4. 理解FFN
+   1. 理解GLU的实际计算过程：重点需要去理解其中的线性参数
 
-4. 理解KVCache
+5. 理解KVCache
    1. 理解推理阶段，prefill和decode的概念
    2. 理解如何在prefill阶段，保存模型的k和v的cache，如何在decode阶段，维护k和v的cache
-
-5. 理解FFN
-   1. 理解GLU的实际计算过程：重点需要去理解其中的线性参数
