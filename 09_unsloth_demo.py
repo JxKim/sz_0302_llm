@@ -109,4 +109,4 @@ trainer.train()
 
 # save_pretrained_merged，原生的transformers的model是没有，这个方式是Unsloth的FastLanguageModel所带的方法
 # 优化点五：unsloth的model提供了save_pretrained_merged方法，通过调用该方法，就能够对模型的权重进行合并，将适配器权重和基座模型的权重合并到一起去
-model.save_pretrained_merged("./finetuned/Qwen3-8B-SFT-unsloth-merged", tokenizer, save_method="merged_16bit")
+quantized_peft_model.save_pretrained_merged("./finetuned/Qwen3-8B-SFT-unsloth-merged", tokenizer, save_method="merged_16bit")
